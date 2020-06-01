@@ -2,6 +2,10 @@ import chalk from 'chalk'
 import fs from 'fs'
 import { spawn } from 'child_process'
 import stringFormat from 'string-format'
+import gb from 'glob'
+import nodePath from 'path'
+
+const { stat } = fs
 
 
 type Log = { log: Function }
@@ -20,6 +24,8 @@ export const magenta = wrap(chalk.magenta)  //
 export const spawnLog = (msg: string, command: string): void => {
   log(stringFormat(msg, chalk.blue.call(null, command)))
 }
+
+export const noop = (): void => {}
 
 
 // common
@@ -95,8 +101,72 @@ function asyncSpawn({command, args, option}: Spawn): Promise<ProcessLog> {
 }
 
 
+function isDirectory (path: string): Promise<Boolean> {
+  return new Promise((resolve) => {
+    stat(path, (err, stats) => {
+      if(err) {
+        resolve(false)
+        return
+      }
+      if(stats.isDirectory())  {
+        resolve(true)
+        return
+      }
+      resolve(false)
+    })
+  })
+}
+
+interface GlobReturn {
+  err: any,
+  files: Array<string> | null
+}
+function glob (path: string, options?: any): Promise<GlobReturn>{
+  return new Promise((resolve) => {
+    gb(path,
+      options,
+      (err: any, files: any) => {
+        resolve({err, files})
+      })
+  })
+}
+
+interface PathParams {
+  target: string,
+  current: string
+}
+
+function handlePath (pt: string): PathParams {
+  return {
+    target: nodePath.basename(pt),
+    current: pt
+  }
+}
+
+async function globDir (path: string):Promise<[null | Array<PathParams>, string|null]> {
+  try {
+    const {err, files} = await glob(`${path}/*`)
+    if(err) {
+      return [null, err.toString()]
+    }
+    if(!files) {
+      return [[], null]
+    }
+    let params: Array<PathParams> = []
+    for (const key of files) {
+      const isD = await isDirectory(key)
+      if(isD) params.push(handlePath(key))
+    }
+    return [params, null]
+  } catch (error) {
+    return [null, error.toString()]
+  }
+}
+
+
 
 export {
   log,
-  asyncSpawn
+  asyncSpawn,
+  globDir
 }
