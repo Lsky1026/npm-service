@@ -9,7 +9,7 @@ import * as tools from './tools'
 
 const { 
   red, blue, green, cyan, magenta, log, 
-  noop, globDir
+  noop, globDir, formatAppsResult
  } = tools
 
 
@@ -19,7 +19,15 @@ app.use(bodyParser.json())
 
 
 
-app.post('/path/changePath', (req: express.Request, res: express.Response) => {
+// if change path, return dir 
+app.post('/path/changePath', async (req: express.Request, res: express.Response) => {
   const { path: pt }: { path: string } = req.body
-  // const [info, msg] = globDir(pt)
+  const [info, msg] = await globDir(pt)
+  res.send(formatAppsResult(info, msg))
+})
+
+
+app.post('/npm/command', async (req:express.Request, res: express.Response) => {
+  const {command} : {command: string} = req.body
+  
 })

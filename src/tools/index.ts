@@ -164,6 +164,28 @@ async function globDir (path: string):Promise<[null | Array<PathParams>, string|
 }
 
 
+interface AppsResult {
+  info: any,
+  msg: null | string,
+  code: number
+}
+export const formatAppsResult = (info: Array<any> | null, msg: null | string): AppsResult => {
+  if(msg) {
+    return {
+      info: null,
+      msg,
+      code: -1
+    }
+  }
+
+  return {
+    info,
+    msg: null,
+    code: 0
+  }
+}
+
+
 
 export {
   log,
