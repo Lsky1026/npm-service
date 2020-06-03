@@ -8,6 +8,9 @@
   "devDependencies": {
     "@types/node": "^14.0.6"
   },
+  "scripts": {
+    "watch": "tsc -w"
+  },
   "dependencies": {
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.6",
