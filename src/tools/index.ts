@@ -169,7 +169,7 @@ interface AppsResult {
   msg: null | string,
   code: number
 }
-export const formatAppsResult = (info: Array<any> | null, msg: null | string): AppsResult => {
+export const formatAppsResult = (info: any, msg: null | string): AppsResult => {
   if(msg) {
     return {
       info: null,

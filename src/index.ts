@@ -9,7 +9,7 @@ import * as tools from './tools'
 
 const { 
   red, blue, green, cyan, magenta, log, 
-  noop, globDir, formatAppsResult
+  noop, globDir, formatAppsResult, asyncSpawn
  } = tools
 
 
@@ -27,7 +27,18 @@ app.post('/path/changePath', async (req: express.Request, res: express.Response)
 })
 
 
+// exec npm command
 app.post('/npm/command', async (req:express.Request, res: express.Response) => {
   const {command} : {command: string} = req.body
-  
+  // run command
+  const {data, err} = await asyncSpawn({
+    command: 'npm',
+    args: ['run', command]
+  })
+  if(err) {
+    res.send(formatAppsResult(null, err))
+    return
+  }
+  res.send(formatAppsResult(data, null))
+  return
 })
