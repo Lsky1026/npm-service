@@ -9,7 +9,8 @@
     "@types/node": "^14.0.6"
   },
   "scripts": {
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "start": "node ./lib/index.js"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.0",

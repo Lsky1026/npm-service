@@ -9,7 +9,7 @@ const { stat } = fs
 
 
 type Log = { log: Function }
-const { log }:Log = console
+const { log }: Log = console
 
 
 // wrap chalk log
@@ -25,12 +25,12 @@ export const spawnLog = (msg: string, command: string): void => {
   log(stringFormat(msg, chalk.blue.call(null, command)))
 }
 
-export const noop = (): void => {}
+export const noop = (): void => { }
 
 
 // common
 // 判断模板数据类型
-function isType(type: string):Function {
+function isType(type: string): Function {
   return (obj: any): Boolean => Object.prototype.toString.call(obj) === `[object ${type}]`;
 }
 
@@ -56,6 +56,22 @@ function isEmpty(data: any): Boolean {
   return false;
 }
 
+/**
+ * is exists
+ * @param path string
+ */
+function isExists(path: string): Promise<Boolean> {
+  return new Promise((resolve) => {
+    stat(path, (err, stats) => {
+      if (err) {
+        resolve(false)
+        return
+      }
+      resolve(true)
+    })
+  })
+}
+
 
 interface Spawn {
   command: string,
@@ -72,9 +88,9 @@ interface ProcessLog {
  * promise spawn
  * @param param0 spawn执行参数
  */
-function asyncSpawn({command, args, option}: Spawn): Promise<ProcessLog> { 
+function asyncSpawn({ command, args, option }: Spawn): Promise<ProcessLog> {
   return new Promise((resolve) => {
-    if(isEmpty(command) || isEmpty(args)) {
+    if (isEmpty(command) || isEmpty(args)) {
       resolve({
         data: null,
         err: '参数不全，无法执行spawn命令...'
@@ -101,14 +117,14 @@ function asyncSpawn({command, args, option}: Spawn): Promise<ProcessLog> {
 }
 
 
-function isDirectory (path: string): Promise<Boolean> {
+function isDirectory(path: string): Promise<Boolean> {
   return new Promise((resolve) => {
     stat(path, (err, stats) => {
-      if(err) {
+      if (err) {
         resolve(false)
         return
       }
-      if(stats.isDirectory())  {
+      if (stats.isDirectory()) {
         resolve(true)
         return
       }
@@ -121,12 +137,12 @@ interface GlobReturn {
   err: any,
   files: Array<string> | null
 }
-function glob (path: string, options?: any): Promise<GlobReturn>{
+function glob(path: string, options?: any): Promise<GlobReturn> {
   return new Promise((resolve) => {
     gb(path,
       options,
       (err: any, files: any) => {
-        resolve({err, files})
+        resolve({ err, files })
       })
   })
 }
@@ -136,28 +152,48 @@ interface PathParams {
   current: string
 }
 
-function handlePath (pt: string): PathParams {
+function handlePath(pt: string): PathParams {
   return {
     target: nodePath.basename(pt),
     current: pt
   }
 }
 
-async function globDir (path: string):Promise<[null | Array<PathParams>, string|null]> {
+async function globDir(path: string): Promise<[null | Array<PathParams>, string | null]> {
   try {
-    const {err, files} = await glob(`${path}/*`)
-    if(err) {
+    const { err, files } = await glob(`${path}`)
+    if (err) {
       return [null, err.toString()]
     }
-    if(!files) {
+    if (!files) {
       return [[], null]
     }
     let params: Array<PathParams> = []
     for (const key of files) {
       const isD = await isDirectory(key)
-      if(isD) params.push(handlePath(key))
+      if (isD) params.push(handlePath(key))
     }
     return [params, null]
+  } catch (error) {
+    return [null, error.toString()]
+  }
+}
+
+async function targetProjects(path: string): Promise<[null | Array<string>, string | null]> {
+  try {
+    const [params] = await globDir(path)
+    if (!params) {
+      return [null, null]
+    }
+    let result: Array<string> = []
+    for (const [_, val] of Object.entries(params)) {
+      const current = nodePath.join(val.current, 'package.json')
+      const flag = await isExists(current)
+      if (flag) {
+        result.push(current)
+      }
+    }
+    return [result, null]
   } catch (error) {
     return [null, error.toString()]
   }
@@ -170,7 +206,7 @@ interface AppsResult {
   code: number
 }
 export const formatAppsResult = (info: any, msg: null | string): AppsResult => {
-  if(msg) {
+  if (msg) {
     return {
       info: null,
       msg,
@@ -190,5 +226,7 @@ export const formatAppsResult = (info: any, msg: null | string): AppsResult => {
 export {
   log,
   asyncSpawn,
-  globDir
+  globDir,
+  isExists,
+  targetProjects
 }
