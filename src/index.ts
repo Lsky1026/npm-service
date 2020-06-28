@@ -42,7 +42,7 @@ app.post('/npm/getProjects', async (req: express.Request, res: express.Response)
 app.post('/npm/command', async (req: express.Request, res: express.Response) => {
   const { command }: { command: string } = req.body
   // run command
-  const { data, err } = await asyncSpawn({
+  const { data, err, pid } = await asyncSpawn({
     command: 'npm',
     args: ['run', command]
   })
@@ -50,7 +50,7 @@ app.post('/npm/command', async (req: express.Request, res: express.Response) => 
     res.send(formatAppsResult(null, err))
     return
   }
-  res.send(formatAppsResult(data, null))
+  res.send(formatAppsResult({ pid, data }, null))
   return
 })
 

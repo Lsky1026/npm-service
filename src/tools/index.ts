@@ -11,6 +11,8 @@ const { stat } = fs
 type Log = { log: Function }
 const { log }: Log = console
 
+const cachePid = new Set()
+
 
 // wrap chalk log
 const wrap = (func: Function): Function => (msg: string): void => log(func.call(null, msg))
@@ -81,7 +83,8 @@ interface Spawn {
 
 interface ProcessLog {
   data: null | string,
-  err: null | string
+  err: null | string,
+  pid?: number
 }
 
 /**
@@ -93,7 +96,7 @@ function asyncSpawn({ command, args, option }: Spawn): Promise<ProcessLog> {
     if (isEmpty(command) || isEmpty(args)) {
       resolve({
         data: null,
-        err: '参数不全，无法执行spawn命令...'
+        err: '参数不全，无法执行spawn命令...',
       })
       return
     }
@@ -101,16 +104,22 @@ function asyncSpawn({ command, args, option }: Spawn): Promise<ProcessLog> {
     spawnLog(`执行命令：{} ...`, `${command} ${args.join(' ')}`)
 
     const spawnProcess = spawn(command, args, option)
+    const pid = spawnProcess.pid
+    // cache process id
+    cachePid.add(pid)
+
     spawnProcess.stdout.on('data', (data) => {
       resolve({
         data: data.toString(),
-        err: null
+        err: null,
+        pid,
       })
     })
     spawnProcess.stderr.on('data', (data) => {
       resolve({
         data: null,
-        err: data.toString()
+        err: data.toString(),
+        pid,
       })
     })
   })
@@ -222,11 +231,19 @@ export const formatAppsResult = (info: any, msg: null | string): AppsResult => {
 }
 
 
+function closeProcess(pid: number): boolean {
+  if (!pid || !cachePid.has(pid)) return false
+  process.kill(pid)
+  cachePid.delete(pid)
+  return true
+}
+
 
 export {
   log,
   asyncSpawn,
   globDir,
   isExists,
-  targetProjects
+  targetProjects,
+  closeProcess
 }
