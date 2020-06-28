@@ -19,6 +19,7 @@ const appBase = express()
 
 const { app } = expressWs(appBase)
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 
 

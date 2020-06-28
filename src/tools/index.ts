@@ -161,7 +161,7 @@ function handlePath(pt: string): PathParams {
 
 async function globDir(path: string): Promise<[null | Array<PathParams>, string | null]> {
   try {
-    const { err, files } = await glob(`${path}`)
+    const { err, files } = await glob(`${path}/*`)
     if (err) {
       return [null, err.toString()]
     }
@@ -190,7 +190,7 @@ async function targetProjects(path: string): Promise<[null | Array<string>, stri
       const current = nodePath.join(val.current, 'package.json')
       const flag = await isExists(current)
       if (flag) {
-        result.push(current)
+        result.push(val.current)
       }
     }
     return [result, null]
