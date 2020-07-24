@@ -74,6 +74,11 @@ function isExists(path: string): Promise<Boolean> {
   })
 }
 
+function closeByPid(pid: number): void {
+  if (!cachePid.has(pid)) return
+  process.kill(pid)
+}
+
 
 interface Spawn {
   command: string,
@@ -245,5 +250,6 @@ export {
   globDir,
   isExists,
   targetProjects,
-  closeProcess
+  closeProcess,
+  closeByPid
 }

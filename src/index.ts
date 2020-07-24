@@ -11,7 +11,7 @@ import * as tools from './tools'
 const {
   red, blue, green, cyan, magenta, log,
   noop, globDir, formatAppsResult, asyncSpawn,
-  targetProjects
+  targetProjects, closeByPid
 } = tools
 
 
@@ -52,6 +52,14 @@ app.post('/npm/command', async (req: express.Request, res: express.Response) => 
   }
   res.send(formatAppsResult({ pid, data }, null))
   return
+})
+
+// close pid
+app.post('/npm/close', async (req: express.Request, res: express.Response) => {
+  const { pid }: { pid: number } = req.body
+
+  await closeByPid(pid)
+  res.send(formatAppsResult(null, null))
 })
 
 app.ws('/ws/service', (ws: ws) => {
