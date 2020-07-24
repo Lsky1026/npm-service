@@ -4,6 +4,7 @@ import fs from 'fs'
 import express from 'express'
 import bodyParser from 'body-parser'
 import expressWs from 'express-ws'
+import cors from 'cors'
 import ws from 'ws'
 import path from 'path'
 import * as tools from './tools'
@@ -18,6 +19,7 @@ const {
 const appBase = express()
 
 const { app } = expressWs(appBase)
+app.use(cors({ origin: '*' }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
