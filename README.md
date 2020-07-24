@@ -23,13 +23,13 @@
 ```javascript
 /npm/getProject
 
-	@method: POST
+@method: POST
   
-	@params {
+@params {
     path: string
   }
 
-	@return {
+@return {
     info: <path>[],
     code: 0,
     msg: ''
