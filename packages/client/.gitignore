@@ -1,0 +1,9 @@
+# node_modules
+node_modules
+
+# bound
+dist/
+
+# lock
+yarn.lock
+package-lock.json
