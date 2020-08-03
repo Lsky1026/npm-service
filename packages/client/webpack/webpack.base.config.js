@@ -20,6 +20,8 @@ module.exports = {
     react: 'window.React',
     'react-dom': 'window.ReactDOM',
     'prop-types': 'window.PropTypes',
+    'shineout': 'window.Shineout',
+    'axios': 'window.axios'
   },
   module: {
     rules: [

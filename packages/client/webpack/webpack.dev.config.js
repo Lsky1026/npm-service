@@ -20,14 +20,13 @@ module.exports = merge({}, {
     host: process.env.HOST || 'localhost',
     port: process.env.PORT || 8888,
     open: true,
-    // proxy: {
-      //   '/api': {
-      //     target: 'http://you-awesome.api',
-      //     pathRewrite: { '^/api': '' },
-      //     secure: false,
-      //     changeOrigin: true,
-      //   },
-      // },
+    proxy: {
+        '/': {
+          target: 'http://localhost:5000',
+          secure: false,
+          changeOrigin: true,
+        },
+      },
   }
 },
 base

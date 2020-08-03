@@ -7,3 +7,6 @@ dist/
 # lock
 yarn.lock
 package-lock.json
+
+# error
+yarn-error.log

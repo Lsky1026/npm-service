@@ -12,8 +12,16 @@ import * as tools from './tools'
 const {
   red, blue, green, cyan, magenta, log,
   noop, globDir, formatAppsResult, asyncSpawn,
-  targetProjects, closeByPid
+  targetProjects, closeByPid, handlePath
 } = tools
+
+
+// for test
+const sleep = () => new Promise((resolve) => {
+  setTimeout(() => {
+    resolve(true)
+  }, 5000)
+})
 
 
 const appBase = express()
@@ -30,13 +38,22 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.post('/path/changePath', async (req: express.Request, res: express.Response) => {
   const { path: pt }: { path: string } = req.body
   const [info, msg] = await globDir(pt)
+  // await sleep()
   res.send(formatAppsResult(info, msg))
+})
+
+// current path
+app.get('/path/current', async (req: express.Request, res: express.Response) => {
+  // await sleep()
+  res.send(formatAppsResult(handlePath(process.cwd())))
 })
 
 // get target path projects
 app.post('/npm/getProjects', async (req: express.Request, res: express.Response) => {
   const { path: pt }: { path: string } = req.body
   const [info, msg] = await targetProjects(pt)
+  // for client test
+  // await sleep()
   res.send(formatAppsResult(info, msg))
 })
 

@@ -28,7 +28,10 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
+    "@lsky/http-react": "^0.0.3",
+    "axios": "^0.19.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "shineout": "1.6.1-rc.3"
   }
 }
