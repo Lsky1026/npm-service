@@ -1,0 +1,32 @@
+{
+  "name": "npm-service",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Lsky1026/npm-service.git",
+  "author": "lsky_walt <lsky_walt@163.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.0.6"
+  },
+  "scripts": {
+    "watch": "tsc -w",
+    "start": "node ./lib/index.js"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.6",
+    "@types/express-ws": "^3.0.0",
+    "@types/glob": "^7.1.1",
+    "@types/string-format": "^2.0.0",
+    "body-parser": "^1.19.0",
+    "chalk": "^4.0.0",
+    "cors": "^2.8.5",
+    "eslint": "^7.1.0",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "glob": "^7.1.6",
+    "string-format": "^2.0.0",
+    "tslib": "^2.0.0"
+  }
+}

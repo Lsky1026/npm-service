@@ -193,18 +193,21 @@ async function globDir(path: string): Promise<[null | Array<PathParams>, string 
   }
 }
 
-async function targetProjects(path: string): Promise<[null | Array<string>, string | null]> {
+async function targetProjects(path: string): Promise<[null | Array<PathParams>, string | null]> {
   try {
     const [params] = await globDir(path)
     if (!params) {
       return [null, null]
     }
-    let result: Array<string> = []
+    let result: Array<PathParams> = []
     for (const [_, val] of Object.entries(params)) {
       const current = nodePath.join(val.current, 'package.json')
       const flag = await isExists(current)
       if (flag) {
-        result.push(val.current)
+        result.push({
+          target: val.target,
+          current
+        })
       }
     }
     return [result, null]
@@ -219,7 +222,7 @@ interface AppsResult {
   msg: null | string,
   code: number
 }
-export const formatAppsResult = (info: any, msg: null | string): AppsResult => {
+export const formatAppsResult = (info: any, msg?: null | string): AppsResult => {
   if (msg) {
     return {
       info: null,
@@ -251,5 +254,6 @@ export {
   isExists,
   targetProjects,
   closeProcess,
-  closeByPid
+  closeByPid,
+  handlePath
 }

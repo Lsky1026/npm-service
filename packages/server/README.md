@@ -8,6 +8,7 @@
 - [x] /npm/getProjects
 - [x] /npm/command
 - [x] /path/changePath
+- [x] /path/currennt
 - [x] /npm/close
 
 
@@ -21,7 +22,7 @@
 
 
 ```javascript
-/npm/getProject
+/npm/getProjects
 
 @method: POST
   
@@ -79,6 +80,22 @@
   info: <path>[],
   code: 0,
   msg: ''
+}
+```
+
+### /path/current
+
+> base path
+
+```javascript
+/path/current
+
+@method: GET
+
+@return {
+  info: { current: path, target: dirname},
+  code: 0,
+  msg: null
 }
 ```
 
