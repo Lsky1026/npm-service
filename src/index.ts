@@ -23,6 +23,11 @@ const sleep = () => new Promise((resolve) => {
   }, 5000)
 })
 
+interface BodyPath {
+  path: string,
+  [propName: string]: any
+}
+
 
 const appBase = express()
 
@@ -33,6 +38,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 
+app.post('/path/getProjects', async (req: express.Request, res: express.Response) => {
+  const body: BodyPath = req.body
+  const [info, msg] = await globDir(body.path)
+  res.send(formatAppsResult(info, msg))
+})
 
 // if change path, return dir 
 app.post('/path/changePath', async (req: express.Request, res: express.Response) => {
@@ -90,3 +100,4 @@ app.ws('/ws/service', (ws: ws) => {
 
 
 app.listen(5000)
+blue('app start on port 5000')
